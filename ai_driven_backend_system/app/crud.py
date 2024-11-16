@@ -5,7 +5,7 @@ from database import SessionDep
 from models import KeyValue, KeyValueUpdate
 from exceptions import KeyAlreadyExist, KeyNotFound
 import utils
-from logger import logger
+from logger import app_logger
 
 def createKeyValue(key: str, value: str, session: SessionDep):
     try:
@@ -14,7 +14,7 @@ def createKeyValue(key: str, value: str, session: SessionDep):
         key_value = KeyValue.model_validate(db_key_value)
         session.add(key_value)
         session.commit()
-        logger.info(f"Inserted given {key}: {value}")
+        app_logger.info(f"Inserted given {key}: {value}")
     # If key is already exist
     except sqlalchemy.exc.IntegrityError:
         raise KeyAlreadyExist(key=key)
@@ -30,7 +30,7 @@ def updateKeyValue(key: str, value: str, session: SessionDep):
     key_value_db.sqlmodel_update(key_value)
     session.add(key_value_db)
     session.commit()
-    logger.info(f"Updated existing key: {key} with new value: {value}")
+    app_logger.info(f"Updated existing key: {key} with new value: {value}")
 
 def deleteKeyValue(key: str, session: SessionDep):
     key_value = session.get(KeyValue, key)
@@ -40,4 +40,4 @@ def deleteKeyValue(key: str, session: SessionDep):
     
     session.delete(key_value)
     session.commit()
-    logger.info(f"Deleted given {key}")
+    app_logger.info(f"Deleted given {key}")

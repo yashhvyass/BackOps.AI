@@ -1,83 +1,107 @@
-from fastapi import Depends, FastAPI
+from typing import Annotated
+from fastapi import FastAPI, Request, Form
 from schemas import PromptQuery
 from database import get_session, create_db_and_tables
 from crud import createKeyValue, updateKeyValue, deleteKeyValue
 from database import SessionDep
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+import utils
+from llm import parse_from_llm
+from exceptions import KeyAlreadyExist, KeyNotFound
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
-def hello():
-    return {"message": "Hello World!"}
+templates = Jinja2Templates(directory="templates")
+
+in_memory_session = {
+    "questions": [],
+    "answers": []
+}
+
+@app.get("/", response_class=HTMLResponse)
+def homepage(request: Request):
+    stats = utils.today_stats()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "insert": stats["Inserted"],
+            "update": stats["Updated"],
+            "delete": stats["Deleted"],
+            "questions_answers": zip(in_memory_session["questions"], in_memory_session["answers"]),
+        }
+    )
 
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
 
-@app.get("/llm")
-def parsePrompt(session: SessionDep):
-    # promptDict = prompt.model_dump()
+@app.post("/llm")
+def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: SessionDep):
 
-    action = "Insert"
-    key = "1"
-    value = "abcd"
+    msg = ""
 
-    if action == "Insert":
-        createKeyValue(key, value, session)
-    elif action == "Update":
-        updateKeyValue(key, value, session)
-    elif action == "Delete":
-        deleteKeyValue(key, session)
+    try:
+        parsed_user_inputs = parse_from_llm(prompt)
+    except Exception:
+        msg = "Not able to parse given prompt"
 
-    action = "Update"
-    key = "1"
-    value = "efgh"
+    print(parsed_user_inputs)
 
-    if action == "Insert":
-        createKeyValue(key, value, session)
-    elif action == "Update":
-        updateKeyValue(key, value, session)
-    elif action == "Delete":
-        deleteKeyValue(key, session)
+    for input in parsed_user_inputs:
+        action = input.get("action")
+        key = input.get("key")
+        value = input.get("value", "")
 
-    action = "Delete"
-    key = "1"
-    value = ""
 
-    if action == "Insert":
-        createKeyValue(key, value, session)
-    elif action == "Update":
-        updateKeyValue(key, value, session)
-    elif action == "Delete":
-        deleteKeyValue(key, session)
+        if action.lower() == "insert":
+
+            try:
+                createKeyValue(key, value, session)
+            except KeyAlreadyExist as e:
+                print(e)
+                msg = e
+            else:
+                msg = f"Successfully inserted given {key}: {value}"
+
+        elif action.lower() == "update":
+        
+            try:
+                updateKeyValue(key, value, session)
+            except KeyNotFound as e:
+                msg = e
+            else:
+                msg = f"Successfully updated existing key: {key} with new value: {value}"
+        
+        elif action.lower() == "delete":
+            try:
+                deleteKeyValue(key, session)
+            except KeyNotFound as e:
+                msg = e
+            else:
+                msg = f"Successfully deleted existing key: {key}"
+
+        in_memory_session["questions"].append(prompt)
+        in_memory_session["answers"].append(msg)
+
+    stats = utils.today_stats()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "insert": stats["Inserted"],
+            "update": stats["Updated"],
+            "delete": stats["Deleted"],
+            "questions_answers": zip(in_memory_session["questions"], in_memory_session["answers"]),
+        }
+    ) 
+
 
 @app.get("/get-log-stats/{year}/{month}/{day}")
 def log_stats(year: int, month: int, day: int):
-    stats = {
-        'Inserted': 0,
-        'Updated': 0,
-        'Deleted': 0
-    }
-    with open('myapp.log') as f:
-        for log in f:
-            log = log.strip()
-
-            # Extract year (0 - 3)
-            logYear = int(log[0: 4])
-
-            # Extract month (5 - 6)
-            logMonth = int(log[5: 7])
-
-            # Extract day (8 - 10)
-            logDay = int(log[8: 11])
-
-            # Message of the log
-            splitStrList = log.split("-")[-1].lstrip()
-
-            op = splitStrList.split(" ")[0]
-
-            # Process log if it only matches given query criteria
-            if year == logYear and month == logMonth and day == logDay:
-                stats[op] += 1
-
-    return stats
+    return utils.get_stats(year, month, day)

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Dashboard</title>
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+    <!-- <video class="video-background" autoplay muted loop>
+        <source src="/src/assets/Media/back1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video> -->
+    <div class="dashboard-container">
+        <header>
+            <h2>AI ASSISTANT DASHBOARD</h2>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Overview Section -->
+            <section class="overview-section dashboard-card">
+                <h2>Overview</h2>
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <div class="metric-circle">
+                            <span id="totalQueries">{{insert}}</span>
+                        </div>
+                        <h3>Insert</h3>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-circle">
+                            <span id="avgResponseTime">{{update}}</span>
+                        </div>
+                        <h3>Update</h3>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-circle">
+                            <span id="successRate">{{delete}}</span>
+                        </div>
+                        <h3>Delete</h3>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-circle">
+                            <span id="RandomFact">0%</span>
+                        </div>
+                        <h3>Random Fact</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Query Visualization Section -->
+            <section class="query-section dashboard-card">
+                <h2>
+                    Query Visualization
+                    <button id="viewLogsBtn" class="view-logs-btn">View Total Logs</button>
+                </h2>
+                <div class="visualization-container">
+                    <div id="queryChart"></div>
+                </div>
+            </section>
+
+            <!-- Ask Anything Section -->
+            <section class="ask-section dashboard-card">
+                <h2>Ask Anything</h2>
+                <div id="chatMessages" class="chat-messages">
+                    {% for question, answer in questions_answers %}
+                        <p>{{ question }}</p>
+                        <p>{{ answer }}</p>
+                    {% endfor %}
+                </div>
+                <form action="{{url_for('parsePrompt')}}" method="POST">
+                    <div class="chat-input-container">
+                        <input type="text" id="prompt" name="prompt" placeholder="Type your question...">
+                        <button id="voiceBtn" class="voice-btn">🎤</button>
+                        <button type="submit" id="sendBtn" class="send-btn">➤</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="analytics-section dashboard-card">
+                <h2>Analytics</h2>
+                <div class="analytics-container">
+                    <div class="calendar-container">
+                        <div id="calendar" class="calendar"></div>
+                    </div>
+                    <div class="activity-chart">
+                        <h3>Past 7 days Activity</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
