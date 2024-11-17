@@ -2,8 +2,8 @@
 :root {
     --primary-color: #A4C3B2; /* Sage Green */
     --secondary-color: #86b384; /* Pastel Mint */
-    --background-color: #8eb4a2; /* Pale Green White */
-    --card-background: #f6f6f695; /* White */
+    --background-color: #4a5759; /* Pale Green White */
+    --card-background: #7876766e; /* White */
     --border-color: #516657; /* Light Mint Green */
     --text-color: #36454F; /* Slate Gray */
 }
@@ -26,8 +26,7 @@
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-image: url('../media/5630939.jpg');  
            /* Set height to 100% of viewport height */
 }
 
@@ -56,14 +55,21 @@ header h1 {
     /* Define two rows with auto height */
     grid-template-rows: auto auto;
     gap: 20px;
-    overflow: hidden; /* Prevent internal overflow */
+    overflow:hidden; /* Prevent internal overflow */
 }
 
 .dashboard-card {
-    background: var(--card-background);
+    background-color: var(--card-background);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease-in-out;
+}
+
+.dashboard-card:hover{
+    border: 2px solid #F89B29;
+    transform: scale(0.98);
+    border-radius: 10px;
 }
 
 /* Overview Section Styles */
@@ -180,6 +186,16 @@ header h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    color: #f8f7ff;
+    font-family: "Cinzel", serif;
+}
+h2{
+    color: #f8f7ff;
+    font-family: "Cinzel", serif;
+}
+h3{
+    color: #f8f7ff;
+    font-family: "Cinzel", serif;
 }
 
 .visualization-container {
@@ -195,15 +211,16 @@ header h1 {
     display: flex;          /* Enables flexbox layout */
     align-items: center;    /* Vertically aligns text and image */
     justify-content: center;
-    background-color: #55A630;
+    background-color: #ba53708b;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: normal;
+    font-weight: bold;
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
+    font-family: "Cinzel"
 }
 
 .view-logs-btn:hover{
@@ -230,28 +247,40 @@ header h1 {
     display: flex;
     gap: 10px;
     margin: 10px 0;
+    border: 2px solid rgba(255, 255, 255, 0.567);
+    border-radius: 10px;
 }
 
 .chat-input-container input {
     flex-grow: 1;
     padding: 10px;
-    border: 1px solid var(--border-color);
     border-radius: 5px;
+    border: none;
+    background-color: transparent;
+}
+.chat-input-container input:focus{
+    border: none;
+    outline: none;
 }
 
 .voice-btn, .send-btn {
-    padding: 10px 15px;
+    padding: 5px;
     border: none;
     border-radius: 5px;
-    background-color: var(--primary-color);
     color: white;
     cursor: pointer;
+    background: transparent;
+}
+.send-btn{
+    padding-right: 10px;
+}
+.mic{
+    width: 20px;
 }
 
 .chat-messages {
     height: calc(100% - 70px); /* Subtract input container height */
     overflow-y: auto;
-    border: 1px solid var(--border-color);
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Dashboard</title>
     <link rel="stylesheet" href="../static/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <!-- Include ApexCharts library -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -12,7 +15,7 @@
 </head>
 <body>
     <!-- <video class="video-background" autoplay muted loop>
-        <source src="/src/assets/Media/back1.mp4" type="video/mp4">
+        <source src="../static/media/back1.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video> -->
     <div class="dashboard-container">
@@ -31,14 +34,14 @@
                             <div id="chart1"></div>
                         </div>
                     </div>
-                    
+                
                     <div class="chart-card">
                         <div class="chart-wrapper">
                             <!-- Placeholder for the ApexCharts radial chart -->
                             <div id="chart2"></div>
                         </div>
                     </div>
-                    
+                
                     <div class="chart-card">
                         <div class="chart-wrapper">
                             <!-- Placeholder for the ApexCharts radial chart -->
@@ -47,7 +50,6 @@
                     </div>
                     <div class="chart-card">
                         <div class="chart-wrapper">
-                            <!-- <meta id="total-operation" data-name="{{insert + update + delete}}"> -->
                             <!-- Placeholder for the ApexCharts chart -->
                             <div id="chart"></div>
                         </div>
@@ -61,63 +63,56 @@
 
             <!-- Query Visualization Section -->
             <section class="query-section dashboard-card">
-                <h2>
-                    Query Visualization
-                    <!-- <button id="viewLogsBtn" class="view-logs-btn">View Total Logs <img src="/src/assets/Media/downloads.png" /></button> -->
-
-                </h2>
+                <h2>Key Lifecycle Information</h2>
                 <div class="visualization-container">
                     <div class="table-container">
-                        <h3>Insert</h3>
                         <table class="custom-table">
                             <thead>
                                 <tr>
+                                    <th>Operation</th>
                                     <th>Key</th>
                                     <th>Value</th>
                                     <th>Created Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in key_lifecycle_data["Insert"] %}
-                                <tr>
-                                    <td>{{row['key']}}</td>
-                                    <td>{{row['value']}}</td>
-                                    <td>{{row['created_time']}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>Key</th>
-                                    <th>Value</th>
                                     <th>Updated Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in key_lifecycle_data["Update"] %}
-                                <tr>
-                                    <td>{{row['key']}}</td>
-                                    <td>{{row['value']}}</td>
-                                    <td>{{row['updated_time']}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>Key</th>
                                     <th>Deleted Time</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for row in key_lifecycle_data["Delete"] %}
-                                <tr>
-                                    <td>{{row['key']}}</td>
-                                    <td>{{row['delete_time']}}</td>
-                                </tr>
+                                {% for op in key_lifecycle_data %}
+                                    {% if op == 'Insert' %}
+                                        {% for entry in key_lifecycle_data['Insert'] %}
+                                            <tr>
+                                                <td>{{op}}</td>
+                                                <td>{{entry['key']}}</td>
+                                                <td>{{entry['value']}}</td>
+                                                <td>{{entry['created_time']}}</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% elif op == 'Update' %}
+                                        {% for entry in key_lifecycle_data['Update'] %}
+                                            <tr>
+                                                <td>{{op}}</td>
+                                                <td>{{entry['key']}}</td>
+                                                <td>{{entry['value']}}</td>
+                                                <td>-</td>
+                                                <td>{{entry['updated_time']}}</td>
+                                                <td>-</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for entry in key_lifecycle_data['Delete'] %}
+                                            <tr>
+                                                <td>{{op}}</td>
+                                                <td>{{entry['key']}}</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>{{entry['deleted_time']}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -129,7 +124,7 @@
             <section class="ask-section dashboard-card">
                 <h2>Ask Anything</h2>
                 <div id="chatMessages" class="chat-messages">
-                    <div class="chat-container">
+                    <!-- <div class="chat-input-container"> -->
                         {% for question, answer in questions_answers %}
                           <div class="message question">
                             {% if question %}
@@ -142,20 +137,29 @@
                             {% endif %}
                           </div>
                         {% endfor %}
-                      </div>
+                    <!-- </div> -->
                 </div>
                 <form action="{{url_for('parsePrompt')}}" method="POST">
                     <div class="chat-input-container">
                         <input type="text" id="prompt" name="prompt" placeholder="Type your question...">
-                        <!-- <button id="voiceBtn" class="voice-btn">🎤</button> -->
-                        <button type="submit" id="sendBtn" class="send-btn">➤</button>
+                        <button id="voiceBtn" class="voice-btn"><img class="mic" src="../static/media/mic1.png"/></button>
+                        <button id="sendBtn" class="send-btn"><img class="mic" src="../static/media/send.png" /></button>
                     </div>
                 </form>
             </section>
 
             <!-- Analytics Section -->
             <section class="analytics-section dashboard-card">
-                <h2>Query Visualization</h2>
+                <h2>Analytics</h2>
+                <div class="analytics-container">
+                    <div class="calendar-container">
+                        <div id="calendar" class="calendar"></div>
+                    </div>
+                    <div class="activity-chart">
+                        <h3>Past 7 days Activity</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -175,12 +179,21 @@
                         size: '60%',  // Size of the hollow center (creating a donut effect)
                     },
                     dataLabels: {
+                        name: {
+                            color: 'white', // Color for the label (e.g., "INSERT")
+                            fontSize: '16px', // Optional: Set font size for the label
+                            fontFamily: "Cinzel"
+                            
+                        },
                         value: {
+                            color: 'white', // Color for the percentage (e.g., "70")
+                            fontSize: '20px', // Optional: Set font size for the percentage
+                            fontFamily: "Cinzel",
                             formatter: function (){
                                 return insertData;
                             }
-                        }
-                    }
+                        },
+                    },
                 },
             },
             labels: ['INSERT'],  // Label for the radial chart
@@ -205,12 +218,20 @@
                         size: '60%',  // Size of the hollow center (creating a donut effect)
                     },
                     dataLabels: {
+                        name: {
+                            color: '#f8f7ff', // Color for the label (e.g., "INSERT")
+                            fontSize: '16px', // Optional: Set font size for the label
+                            fontFamily: "Cinzel"
+                        },
                         value: {
+                            color: '#f8f7ff', // Color for the percentage (e.g., "70")
+                            fontSize: '20px', // Optional: Set font size for the percentage
+                            fontFamily: "Cinzel",
                             formatter: function (){
                                 return updateData;
                             }
-                        }
-                    }
+                        },
+                    },
                 },
             },
             labels: ['UPDATE'],  // Label for the radial chart
@@ -235,12 +256,20 @@
                         size: '60%',  // Size of the hollow center (creating a donut effect)
                     },
                     dataLabels: {
+                        name: {
+                            color: '#f8f7ff', // Color for the label (e.g., "INSERT")
+                            fontSize: '16px', // Optional: Set font size for the label
+                            fontFamily: "Cinzel"
+                        },
                         value: {
-                            formatter: function (){
-                                return deleteData;
-                            }
+                            color: '#f8f7ff', // Color for the percentage (e.g., "70")
+                            fontSize: '20px', // Optional: Set font size for the percentage
+                            fontFamily: "Cinzel"
+                        },
+                        formatter: function (){
+                            return deleteData;
                         }
-                    }
+                    },
                 },
             },
             labels: ['DELETE'],  // Label for the radial chart
@@ -261,14 +290,20 @@
                 radialBar: {
                     dataLabels: {
                         name: {
-                            fontSize: '22px',
+                            fontSize: '10px',
+                            color: '#f8f7ff',
+                            fontFamily: "Cinzel"
                         },
                         value: {
                             fontSize: '16px',
+                            color: '#f8f7ff',
+                            fontFamily: "Cinzel"
                         },
                         total: {
                             show: true,
                             label: 'Total',
+                            color: '#f8f7ff',
+                            fontFamily: "Cinzel",
                             formatter: function (w) {
                                 return 249; // This could be dynamically calculated if needed
                             }
@@ -282,26 +317,6 @@
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
-
-    <script>
-        // Assuming data for the charts
-        const chartData = [
-            { label: "INSERT", value: 40, elementId: "insert-value", color: "#4CAF50" },
-            { label: "UPDATE", value: 80, elementId: "update-value", color: "#2196F3" },
-            { label: "DELETE", value: 50, elementId: "delete-value", color: "#F44336" },
-        ];
-
-        // Function to update the charts dynamically
-        chartData.forEach(data => {
-            const chartElement = document.querySelector(`.circle-${data.label.toLowerCase()}`);
-            const valueElement = document.getElementById(data.elementId);
-            const strokeDasharray = `${data.value}, 100`;
-
-            // Set the stroke-dasharray dynamically based on the value
-            chartElement.setAttribute('stroke-dasharray', strokeDasharray);
-            valueElement.textContent = data.value;
-        });
-    </script>
-    <!-- <script type="module" src="../static/js/dashboard.js"></script> -->
+    <script src="../static/js/dashboard.js"></script>
 </body>
 </html>

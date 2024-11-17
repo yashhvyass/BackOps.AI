@@ -53,8 +53,10 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
 
     msg = ""
 
+    print(prompt)
     try:
         parsed_user_inputs = parse_from_llm(prompt)
+        print(parsed_user_inputs)
     except Exception:
         msg = "Not able to parse given prompt"
 
