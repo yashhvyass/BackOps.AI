@@ -26,7 +26,7 @@
         <main class="dashboard-grid">
             <!-- Overview Section -->
             <section class="overview-section dashboard-card">
-                <h2>Overview</h2>
+                <h2>Overview (Display Today's Statastics)</h2>
                 <div class="charts-container">
                     <div class="chart-card">
                         <div class="chart-wrapper">
@@ -51,7 +51,7 @@
                     <div class="chart-card">
                         <div class="chart-wrapper">
                             <!-- Placeholder for the ApexCharts chart -->
-                            <div id="chart"></div>
+                            <div id="chart4"></div>
                         </div>
                         <p class="chartlabel"></p>
                     </div>
@@ -61,68 +61,16 @@
             </section>
 
 
-            <!-- Query Visualization Section -->
-            <section class="query-section dashboard-card">
-                <h2>Key Lifecycle Information</h2>
-                <div class="visualization-container">
-                    <div class="table-container">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>Operation</th>
-                                    <th>Key</th>
-                                    <th>Value</th>
-                                    <th>Created Time</th>
-                                    <th>Updated Time</th>
-                                    <th>Deleted Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for op in key_lifecycle_data %}
-                                    {% if op == 'Insert' %}
-                                        {% for entry in key_lifecycle_data['Insert'] %}
-                                            <tr>
-                                                <td>{{op}}</td>
-                                                <td>{{entry['key']}}</td>
-                                                <td>{{entry['value']}}</td>
-                                                <td>{{entry['created_time']}}</td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% elif op == 'Update' %}
-                                        {% for entry in key_lifecycle_data['Update'] %}
-                                            <tr>
-                                                <td>{{op}}</td>
-                                                <td>{{entry['key']}}</td>
-                                                <td>{{entry['value']}}</td>
-                                                <td>-</td>
-                                                <td>{{entry['updated_time']}}</td>
-                                                <td>-</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        {% for entry in key_lifecycle_data['Delete'] %}
-                                            <tr>
-                                                <td>{{op}}</td>
-                                                <td>{{entry['key']}}</td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>{{entry['deleted_time']}}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+            <section class="calendar-section dashboard-card">
+                <h2>Calendar</h2>
+                <div class="calendar-container">
+                    <div id="calendar" class="calendar"></div>
                 </div>
             </section>
 
             <!-- Ask Anything Section -->
             <section class="ask-section dashboard-card">
-                <h2>Ask Anything</h2>
+                <h2>Hey! How can I help you?</h2>
                 <div id="chatMessages" class="chat-messages">
                     <!-- <div class="chat-input-container"> -->
                         {% for question, answer in questions_answers %}
@@ -148,19 +96,78 @@
                 </form>
             </section>
 
-            <!-- Analytics Section -->
-            <section class="analytics-section dashboard-card">
-                <h2>Analytics</h2>
-                <div class="analytics-container">
-                    <div class="calendar-container">
-                        <div id="calendar" class="calendar"></div>
-                    </div>
-                    <div class="activity-chart">
-                        <h3>Past 7 days Activity</h3>
-                        <canvas id="activityChart"></canvas>
+            <!-- Query Visualization Section -->
+            <section class="query-section dashboard-card">
+                <h2>Key Lifecycle Information (Show Today's Transaction)</h2>
+                <div class="visualization-container">
+                    <div class="table-container">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Operation</th>
+                                    <th>Key</th>
+                                    <th>Value</th>
+                                    <th>Created Time</th>
+                                    <th>Updated Time</th>
+                                    <th>Deleted Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for op in key_lifecycle_data %}
+                                {% if op == 'Insert' %}
+                                {% for entry in key_lifecycle_data['Insert'] %}
+                                <tr>
+                                    <td>{{op}}</td>
+                                    <td>{{entry['key']}}</td>
+                                    <td>{{entry['value']}}</td>
+                                    <td>{{entry['created_time']}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                {% endfor %}
+                                {% elif op == 'Update' %}
+                                {% for entry in key_lifecycle_data['Update'] %}
+                                <tr>
+                                    <td>{{op}}</td>
+                                    <td>{{entry['key']}}</td>
+                                    <td>{{entry['value']}}</td>
+                                    <td>-</td>
+                                    <td>{{entry['updated_time']}}</td>
+                                    <td>-</td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                {% for entry in key_lifecycle_data['Delete'] %}
+                                <tr>
+                                    <td>{{op}}</td>
+                                    <td>{{entry['key']}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>{{entry['deleted_time']}}</td>
+                                </tr>
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
+
+            
+            
+            <section class="charts-section dashboard-card">
+                <h2>Analytics</h2>
+                <div class="charts-container">
+                    <div class="activity-chart">
+                        <h3>Past 7 Days Activity</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                    <!-- Add more charts here if needed -->
+                </div>
+            </section>
+            
         </main>
     </div>
     <script>
@@ -264,11 +271,11 @@
                         value: {
                             color: '#f8f7ff', // Color for the percentage (e.g., "70")
                             fontSize: '20px', // Optional: Set font size for the percentage
-                            fontFamily: "Cinzel"
+                            fontFamily: "Cinzel",
+                            formatter: function (){
+                                return deleteData;
+                            }
                         },
-                        formatter: function (){
-                            return deleteData;
-                        }
                     },
                 },
             },
@@ -279,43 +286,42 @@
         radialChartInstance.render();
     </script>
     <script>
+        var total = JSON.parse('{{ (update + insert + delete) | tojson }}');
         var options = {
-            series: [44, 55],
+            series: [total],  // Percentage value for the radial bar
             chart: {
                 height: 200,
-                type: 'radialBar',
+                type: 'radialBar',  // Radial bar chart type
             },
-            colors: ['#004b23', '#9d0208'],
+            colors: ['#2b2a2a'],
             plotOptions: {
+
                 radialBar: {
+                    hollow: {
+                        size: '60%',  // Size of the hollow center (creating a donut effect)
+                    },
                     dataLabels: {
                         name: {
-                            fontSize: '10px',
-                            color: '#f8f7ff',
+                            color: '#f8f7ff', // Color for the label (e.g., "INSERT")
+                            fontSize: '16px', // Optional: Set font size for the label
                             fontFamily: "Cinzel"
                         },
                         value: {
-                            fontSize: '16px',
-                            color: '#f8f7ff',
-                            fontFamily: "Cinzel"
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            color: '#f8f7ff',
+                            color: '#f8f7ff', // Color for the percentage (e.g., "70")
+                            fontSize: '20px', // Optional: Set font size for the percentage
                             fontFamily: "Cinzel",
-                            formatter: function (w) {
-                                return 249; // This could be dynamically calculated if needed
+                            formatter: function (){
+                                return total
                             }
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
-            labels: ['Success Rate', 'Error Rate'],
+            labels: ['TOTAL'],  // Label for the radial chart
         };
 
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
+        var radialChartInstance = new ApexCharts(document.querySelector("#chart4"), options);
+        radialChartInstance.render();
     </script>
     <script src="../static/js/dashboard.js"></script>
 </body>

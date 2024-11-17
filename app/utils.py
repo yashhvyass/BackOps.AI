@@ -37,6 +37,9 @@ def get_stats(year: int, month: int, day: int):
             # Message of the log
             splitStrList = log.split("-")[-1].lstrip()
 
+            if log.split("-")[4] == 'ERROR':
+                continue
+
             op = splitStrList.split(" ")[0]
 
             # Process log if it only matches given query criteria

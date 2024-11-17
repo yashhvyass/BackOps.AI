@@ -257,6 +257,8 @@ h3{
     border-radius: 5px;
     border: none;
     background-color: transparent;
+    font-family: "Cinzel";
+    color: rgba(255, 255, 255, 0.567)
 }
 .chat-input-container input:focus{
     border: none;
@@ -290,7 +292,7 @@ h3{
 .analytics-section {
     height: 350px; /* Fixed height */
     overflow: hidden;
-    grid-column: span 4;
+    grid-column: span 3;
 }
 
 .analytics-container {
@@ -298,14 +300,19 @@ h3{
     display: flex;
     gap: 20px;
 }
-
+.calendar-section{
+    grid-column: span 2;
+    font-family: "Cinzel"
+}
 .calendar-container {
     flex: 1;
     max-height: 100%;
     overflow: hidden;
 }
 
-
+.charts-section{
+    grid-column: span 2;
+}
 .activity-chart {
     flex: 1;
     max-height: 100%;
@@ -320,6 +327,7 @@ h3{
     background: transparent;
     padding: 10px;
     overflow: hidden;
+    font-family: "Cinzel"
 }
 
 .calendar .header {
@@ -329,6 +337,7 @@ h3{
     font-weight: bold;
     border: 1px solid #ddd;
     border-radius: 20px;
+    font-family: "Cinzel"
 }
 
 .calendar .days {
@@ -336,6 +345,7 @@ h3{
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
     padding: 10px;
+    font-family: "Cinzel"
 }
 
 .calendar .day {
@@ -344,6 +354,7 @@ h3{
     border: 1px solid #ddd;
     border-radius: 20px;
     color: white;
+    font-family: "Cinzel"
 }
 
 .calendar .day:hover{
@@ -390,18 +401,21 @@ h3{
     padding: 10px 15px;
     border-radius: 20px;
     margin: 0;
+    font-family: "Cinzel"
 }
 
 .question p {
     background-color: #f0f0f0;
     color: #333;
     border-bottom-left-radius: 0;
+    font-family: "Cinzel"
 }
 
 .answer p {
-    background-color: #8eb4a2;
+    background-color: #ba5370cb;
     color: #fff;
     border-bottom-right-radius: 0;
+    font-family: "Cinzel"
 }
 
 .button-container {
@@ -443,37 +457,36 @@ h3{
 .table-container {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    font-size: 12px;
+    font-family: "Cinzel", serif;
+    overflow: scroll;
 }
 
 .custom-table {
     border-collapse: collapse;
-    width: 30%;
-    background: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: scroll;
+    width: 50px;
+    background: #ffffffa2;
+    border-radius: 10px;
 }
 
 .custom-table th,
 .custom-table td {
-    padding: 12px 15px;
+    padding: 10px 10px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    
 }
 
 .custom-table th {
-    background-color: #007bff;
+    background-color: #ba5370;
     color: #fff;
     text-transform: uppercase;
-    font-size: 14px;
-}
-
-.custom-table tr:hover {
-    background-color: #f1f1f1;
+    font-size: 12px;
+    font-family: "Cinzel", serif;
 }
 
 .custom-table td {
-    font-size: 14px;
+    font-size: 12px;
     color: #555;
+    font-family: "Cinzel", serif;
+    font-weight: bold;
 }

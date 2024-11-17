@@ -51,47 +51,54 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
 
     msg = ""
 
-    print(prompt)
     try:
         parsed_user_inputs = parse_from_llm(prompt)
-        print(parsed_user_inputs)
     except Exception:
-        msg = "Not able to parse given prompt"
+        msg = "Sorry!, Not able to serve request now."
+
+        in_memory_session["answers"].append(msg)
+
+        return RedirectResponse(url="/", status_code=303)
 
     in_memory_session["questions"].append(prompt)
 
-    for input in parsed_user_inputs:
-        action = input.get("action")
-        key = input.get("key")
-        value = input.get("value", "")
+    try:
+        for input in parsed_user_inputs:
+            action = input.get("action")
+            key = input.get("key")
+            value = input.get("value", "")
 
 
-        if action.lower() == "insert":
+            if action.lower() == "insert":
 
-            try:
-                createKeyValue(key, value, session)
-            except KeyAlreadyExist as e:
-                print(e)
-                msg = e
-            else:
-                msg = f"Successfully inserted given {key}: {value}"
+                try:
+                    createKeyValue(key, value, session)
+                except KeyAlreadyExist as e:
+                    print(e)
+                    msg = e
+                else:
+                    msg = f"Successfully inserted given {key}: {value}"
 
-        elif action.lower() == "update":
-        
-            try:
-                updateKeyValue(key, value, session)
-            except KeyNotFound as e:
-                msg = e
-            else:
-                msg = f"Successfully updated existing key: {key} with new value: {value}"
-        
-        elif action.lower() == "delete":
-            try:
-                deleteKeyValue(key, session)
-            except KeyNotFound as e:
-                msg = e
-            else:
-                msg = f"Successfully deleted existing key: {key}"
+            elif action.lower() == "update":
+            
+                try:
+                    updateKeyValue(key, value, session)
+                except KeyNotFound as e:
+                    msg = e
+                else:
+                    msg = f"Successfully updated existing key: {key} with new value: {value}"
+            
+            elif action.lower() == "delete":
+                try:
+                    deleteKeyValue(key, session)
+                except KeyNotFound as e:
+                    msg = e
+                else:
+                    msg = f"Successfully deleted existing key: {key}"
+
+            in_memory_session["answers"].append(msg)
+    except Exception:
+        msg = "Sorry!, Not able to serve request now."
 
         in_memory_session["answers"].append(msg)
 
@@ -101,3 +108,17 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
 @app.get("/get-log-stats/{year}/{month}/{day}")
 def log_stats(year: int, month: int, day: int):
     return utils.get_stats(year, month, day)
+
+@app.get("/get-past-day-log-stats")
+def log_stats_of_past_days(days: int):
+    ans = {"count": [], "date": []}
+
+    year, month, current_day = utils.get_today_date_attr()
+
+    for day in range(1, days + 1):
+        stats = utils.get_stats(year, month, current_day - day)
+
+        ans["count"].append(stats["Inserted"] + stats["Updated"] + stats["Deleted"])
+        ans["date"].append(f"{month}/{day}/{year}")
+
+    return ans
