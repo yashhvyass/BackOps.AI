@@ -15,7 +15,7 @@ The repository contains hackathon project code for AI agent operating backend sy
 | Team Member Name | Email |
 | ----- | ----- |
 | Dev Patel | dap3@iu.edu |
-| Dhruv Bhanderi | dgbhander@iu.edu |
+| Dhruv Bhanderi | dbhander@iu.edu |
 | Yash Vyas | yashhvyass@iu.edu |
 | Dhwanit Pandya | dhpandya@iu.edu |
 
