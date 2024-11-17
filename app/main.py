@@ -27,8 +27,6 @@ def homepage(request: Request):
 
     key_lifecycle_data = utils.visualization_of_lifecycle_of_key_for_today()
 
-    print(key_lifecycle_data)
-
     max_length = max(len(in_memory_session["questions"]), len(in_memory_session["answers"]))
     q_and_a = zip(in_memory_session["questions"] + [None] * (max_length - len(in_memory_session["questions"])), in_memory_session["answers"] + [None] * (max_length - len(in_memory_session["answers"])))
 
