@@ -50,7 +50,7 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
     except Exception:
         msg = "Not able to parse given prompt"
 
-    print(parsed_user_inputs)
+    in_memory_session["questions"].append(prompt)
 
     for input in parsed_user_inputs:
         action = input.get("action")
@@ -85,10 +85,12 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
             else:
                 msg = f"Successfully deleted existing key: {key}"
 
-        in_memory_session["questions"].append(prompt)
         in_memory_session["answers"].append(msg)
 
     stats = utils.today_stats()
+
+    max_length = max(len(in_memory_session["questions"]), len(in_memory_session["answers"]))
+    q_and_a = zip(in_memory_session["questions"] + [None] * (max_length - len(in_memory_session["questions"])), in_memory_session["answers"] + [None] * (max_length - len(in_memory_session["answers"])))
 
     return templates.TemplateResponse(
         request=request,
@@ -97,7 +99,7 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
             "insert": stats["Inserted"],
             "update": stats["Updated"],
             "delete": stats["Deleted"],
-            "questions_answers": zip(in_memory_session["questions"], in_memory_session["answers"]),
+            "questions_answers": q_and_a,
         }
     ) 
 

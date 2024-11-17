@@ -64,10 +64,20 @@
             <section class="ask-section dashboard-card">
                 <h2>Ask Anything</h2>
                 <div id="chatMessages" class="chat-messages">
-                    {% for question, answer in questions_answers %}
-                        <p>{{ question }}</p>
-                        <p>{{ answer }}</p>
-                    {% endfor %}
+                    <div class="chat-container">
+                        {% for question, answer in questions_answers %}
+                          <div class="message question">
+                            {% if question %}
+                                <p>{{ question }}</p>
+                            {% endif %}
+                          </div>
+                          <div class="message answer">
+                            {% if answer %}
+                                <p>{{ answer }}</p>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
                 </div>
                 <form action="{{url_for('parsePrompt')}}" method="POST">
                     <div class="chat-input-container">

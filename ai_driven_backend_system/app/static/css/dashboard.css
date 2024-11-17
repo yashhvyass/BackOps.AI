@@ -262,3 +262,41 @@ header h1 {
         grid-column: span 6; /* Full width on smaller screens */
     }
 }
+
+.chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.question {
+    justify-content: flex-end;
+}
+
+.answer {
+    justify-content: flex-start;
+}
+
+.message p {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin: 0;
+}
+
+.question p {
+    background-color: #f0f0f0;
+    color: #333;
+    border-bottom-left-radius: 0;
+}
+
+.answer p {
+    background-color: #8eb4a2;
+    color: #fff;
+    border-bottom-right-radius: 0;
+}
