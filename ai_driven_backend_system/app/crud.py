@@ -14,7 +14,7 @@ def createKeyValue(key: str, value: str, session: SessionDep):
         key_value = KeyValue.model_validate(db_key_value)
         session.add(key_value)
         session.commit()
-        app_logger.info(f"Inserted given {key}: {value}")
+        app_logger.info(f"Inserted key:{key} with value: {value}")
     # If key is already exist
     except sqlalchemy.exc.IntegrityError:
         raise KeyAlreadyExist(key=key)
@@ -40,4 +40,4 @@ def deleteKeyValue(key: str, session: SessionDep):
     
     session.delete(key_value)
     session.commit()
-    app_logger.info(f"Deleted given {key}")
+    app_logger.info(f"Deleted given key: {key}")

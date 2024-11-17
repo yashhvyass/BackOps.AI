@@ -6,7 +6,7 @@ from crud import createKeyValue, updateKeyValue, deleteKeyValue
 from database import SessionDep
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 import utils
 from llm import parse_from_llm
 from exceptions import KeyAlreadyExist, KeyNotFound
@@ -25,6 +25,13 @@ in_memory_session = {
 def homepage(request: Request):
     stats = utils.today_stats()
 
+    key_lifecycle_data = utils.visualization_of_lifecycle_of_key_for_today()
+
+    print(key_lifecycle_data)
+
+    max_length = max(len(in_memory_session["questions"]), len(in_memory_session["answers"]))
+    q_and_a = zip(in_memory_session["questions"] + [None] * (max_length - len(in_memory_session["questions"])), in_memory_session["answers"] + [None] * (max_length - len(in_memory_session["answers"])))
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -32,7 +39,8 @@ def homepage(request: Request):
             "insert": stats["Inserted"],
             "update": stats["Updated"],
             "delete": stats["Deleted"],
-            "questions_answers": zip(in_memory_session["questions"], in_memory_session["answers"]),
+            "questions_answers": q_and_a,
+            "key_lifecycle_data": key_lifecycle_data
         }
     )
 
@@ -87,21 +95,7 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
 
         in_memory_session["answers"].append(msg)
 
-    stats = utils.today_stats()
-
-    max_length = max(len(in_memory_session["questions"]), len(in_memory_session["answers"]))
-    q_and_a = zip(in_memory_session["questions"] + [None] * (max_length - len(in_memory_session["questions"])), in_memory_session["answers"] + [None] * (max_length - len(in_memory_session["answers"])))
-
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context={
-            "insert": stats["Inserted"],
-            "update": stats["Updated"],
-            "delete": stats["Deleted"],
-            "questions_answers": q_and_a,
-        }
-    ) 
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.get("/get-log-stats/{year}/{month}/{day}")

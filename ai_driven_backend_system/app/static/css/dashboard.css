@@ -3,7 +3,7 @@
     --primary-color: #A4C3B2; /* Sage Green */
     --secondary-color: #86b384; /* Pastel Mint */
     --background-color: #8eb4a2; /* Pale Green White */
-    --card-background: #FFFFFF; /* White */
+    --card-background: #f6f6f695; /* White */
     --border-color: #516657; /* Light Mint Green */
     --text-color: #36454F; /* Slate Gray */
 }
@@ -28,19 +28,21 @@
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+           /* Set height to 100% of viewport height */
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 .dashboard-container {
-    max-width: 1400px;
-    margin: 0 auto;
+    max-height: 100%;
+    overflow: hidden; /* Ensure that no internal scrolling occurs */
     padding: 20px;
-    position: relative;
+    max-width: 100%;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
+
 
 header h1 {
     font-size: 2.5rem;
@@ -54,6 +56,7 @@ header h1 {
     /* Define two rows with auto height */
     grid-template-rows: auto auto;
     gap: 20px;
+    overflow: hidden; /* Prevent internal overflow */
 }
 
 .dashboard-card {
@@ -68,53 +71,103 @@ header h1 {
     grid-column: span 4; /* Takes up 4 parts out of 6 */
 }
 
-.metrics-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-    gap: 20px;
+
+.charts-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.metric-card {
-    flex: 1;
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Individual chart card styles */
+.chart-card {
+  background: transparent;
+  border-radius: 8px;
+  padding: 16px;
+  width: 200px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out
 }
 
-.metric-circle {
-    width: 120px;
-    height: 120px;
-    border: 3px solid var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-    margin: 0 auto;
-    background: white;
+/* Wrapper for SVG to center the chart */
+.chart-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+#chart {
+  width: 100%;
+  height: 100%;
 }
 
-.metric-card h3 {
-    text-align: center;
-    margin: 10px 0;
-    color: var(--text-color);
-    font-size: 1rem;
+#chart1 {
+  width: 100%;
+  height: 100%;
+}
+/* Basic styling for the SVG elements */
+.radial-chart {
+  transform: rotate(-90deg); /* Rotate to make it start from top */
+  width: 93%;
+  height: 99%;
 }
 
-.metric-circle h3 {
-    font-size: 0.9rem;
-    margin-bottom: 10px;
+.circle-bg {
+  fill: none;
+  stroke-width: 5;
+  stroke: #e0e0e0; /* Light grey background */
 }
 
-.metric-circle span {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
+.circle {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round; /* Rounded ends for a smooth finish */
+}
+
+.circle-insert {
+  stroke: #4CAF50; /* Green for insert action */
+}
+
+.circle-update {
+  stroke: #2196F3; /* Blue for update action */
+}
+
+.circle-delete {
+  stroke: #F44336; /* Red for delete action */
+}
+
+/* Center the chart value inside the circle */
+.chart-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.chart-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333; /* Dark text for visibility */
+}
+
+/* Label under each chart */
+.chartlabel {
+  font-size: 14px;
+  color: #333;
+  margin-top: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Hover effect for the card */
+.chart-card:hover {
+  transform: translateY(-5px);
 }
 
 /* Query Visualization Section */
@@ -139,14 +192,30 @@ header h1 {
 
 .view-logs-btn {
     padding: 8px 15px;
-    background-color: var(--primary-color);
+    display: flex;          /* Enables flexbox layout */
+    align-items: center;    /* Vertically aligns text and image */
+    justify-content: center;
+    background-color: #55A630;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: normal;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
 }
+
+.view-logs-btn:hover{
+    transform: scale(1.05);
+}
+
+.view-logs-btn img {
+    margin-left: 8px; /* Add space between the text and image */
+    height: 18px;     /* Set a fixed height for the image */
+    width: auto;      /* Maintain the image's aspect ratio */
+}
+
 
 /* Ask Section Styles */
 .ask-section {
@@ -204,14 +273,9 @@ header h1 {
 .calendar-container {
     flex: 1;
     max-height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
-.calendar {
-    width: 100%;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-}
 
 .activity-chart {
     flex: 1;
@@ -224,16 +288,18 @@ header h1 {
 }
 
 .calendar {
-    background: #fff;
+    background: transparent;
     padding: 10px;
+    overflow: hidden;
 }
 
 .calendar .header {
-    background: #f44336;
     color: white;
     padding: 10px;
     text-align: center;
     font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 20px;
 }
 
 .calendar .days {
@@ -247,6 +313,14 @@ header h1 {
     text-align: center;
     padding: 5px;
     border: 1px solid #ddd;
+    border-radius: 20px;
+    color: white;
+}
+
+.calendar .day:hover{
+    background-color: rgba(255, 255, 255, 0.233);
+    transform: scale(1.05);
+    transition: ease-in-out 0.3s;
 }
 
 /* Responsive adjustments */
@@ -299,4 +373,78 @@ header h1 {
     background-color: #8eb4a2;
     color: #fff;
     border-bottom-right-radius: 0;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.flex-button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.flex-button:hover {
+    background-color: #2980b9;
+}
+
+.flex-button:first-child {
+    margin-left: 0;
+}
+
+.flex-button:last-child {
+    margin-right: 0;
+}
+
+.table-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.custom-table {
+    border-collapse: collapse;
+    width: 30%;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: scroll;
+}
+
+.custom-table th,
+.custom-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.custom-table th {
+    background-color: #007bff;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.custom-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-table td {
+    font-size: 14px;
+    color: #555;
 }
