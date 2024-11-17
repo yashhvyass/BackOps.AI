@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 import utils
 from llm import parse_from_llm
-from exceptions import KeyAlreadyExist, KeyNotFound
+from exceptions import KeyAlreadyExist, KeyNotFound, ValueIsEmpty
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -23,8 +23,6 @@ in_memory_session = {
 
 @app.get("/", response_class=HTMLResponse)
 def homepage(request: Request):
-    stats = utils.today_stats()
-
     key_lifecycle_data = utils.visualization_of_lifecycle_of_key_for_today()
 
     max_length = max(len(in_memory_session["questions"]), len(in_memory_session["answers"]))
@@ -34,9 +32,6 @@ def homepage(request: Request):
         request=request,
         name="index.html",
         context={
-            "insert": stats["Inserted"],
-            "update": stats["Updated"],
-            "delete": stats["Deleted"],
             "questions_answers": q_and_a,
             "key_lifecycle_data": key_lifecycle_data
         }
@@ -56,49 +51,45 @@ def parsePrompt(request: Request, prompt: Annotated[str, Form()], session: Sessi
     except Exception:
         msg = "Sorry!, Not able to serve request now."
 
+        in_memory_session["questions"].append(msg)
         in_memory_session["answers"].append(msg)
 
         return RedirectResponse(url="/", status_code=303)
 
     in_memory_session["questions"].append(prompt)
 
-    try:
-        for input in parsed_user_inputs:
-            action = input.get("action")
-            key = input.get("key")
-            value = input.get("value", "")
+    for input in parsed_user_inputs:
+        action = input.get("action")
+        key = input.get("key")
+        value = input.get("value", "")
 
 
-            if action.lower() == "insert":
+        if action.lower() == "insert":
+            try:
+                createKeyValue(key, value, session)
+            except KeyAlreadyExist as e:
+                msg = e
+            except ValueIsEmpty as e:
+                msg = e
+            else:
+                msg = f"Successfully inserted given {key}: {value}"
 
-                try:
-                    createKeyValue(key, value, session)
-                except KeyAlreadyExist as e:
-                    print(e)
-                    msg = e
-                else:
-                    msg = f"Successfully inserted given {key}: {value}"
-
-            elif action.lower() == "update":
-            
-                try:
-                    updateKeyValue(key, value, session)
-                except KeyNotFound as e:
-                    msg = e
-                else:
-                    msg = f"Successfully updated existing key: {key} with new value: {value}"
-            
-            elif action.lower() == "delete":
-                try:
-                    deleteKeyValue(key, session)
-                except KeyNotFound as e:
-                    msg = e
-                else:
-                    msg = f"Successfully deleted existing key: {key}"
-
-            in_memory_session["answers"].append(msg)
-    except Exception:
-        msg = "Sorry!, Not able to serve request now."
+        elif action.lower() == "update":
+        
+            try:
+                updateKeyValue(key, value, session)
+            except KeyNotFound as e:
+                msg = e
+            else:
+                msg = f"Successfully updated existing key: {key} with new value: {value}"
+        
+        elif action.lower() == "delete":
+            try:
+                deleteKeyValue(key, session)
+            except KeyNotFound as e:
+                msg = e
+            else:
+                msg = f"Successfully deleted existing key: {key}"
 
         in_memory_session["answers"].append(msg)
 

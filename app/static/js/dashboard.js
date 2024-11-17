@@ -177,7 +177,7 @@ class Dashboard {
       // Chat elements
       this.userInput = document.getElementById('userInput');
       this.sendBtn = document.getElementById('sendBtn');
-      this.voiceBtn = document.getElementById('voiceBtn');
+      // this.voiceBtn = document.getElementById('voiceBtn');
       this.chatMessages = document.getElementById('chatMessages');
   }
 

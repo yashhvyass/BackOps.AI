@@ -21,7 +21,7 @@
     </video> -->
     <div class="dashboard-container">
         <header>
-            <h2 class="title">AI ASSISTANT DASHBOARD</h2>
+            <h2 class="title">BACKOPS.AI</h2>
         </header>
 
         <main class="dashboard-grid">
@@ -90,8 +90,8 @@
                 </div>
                 <form action="{{url_for('parsePrompt')}}" method="POST">
                     <div class="chat-input-container">
-                        <input type="text" id="prompt" name="prompt" placeholder="Type your question...">
-                        <button id="voiceBtn" class="voice-btn"><img class="mic" src="../static/media/mic1.png"/></button>
+                        <input type="text" id="prompt" name="prompt" placeholder="Type your question..." required>
+                        <!-- <button id="voiceBtn" class="voice-btn"><img class="mic" src="../static/media/mic1.png"/></button> -->
                         <button id="sendBtn" class="send-btn"><img class="mic" src="../static/media/send.png" /></button>
                     </div>
                 </form>

@@ -3,11 +3,14 @@ from fastapi import Depends
 import sqlalchemy
 from database import SessionDep
 from models import KeyValue, KeyValueUpdate
-from exceptions import KeyAlreadyExist, KeyNotFound
+from exceptions import KeyAlreadyExist, KeyNotFound, ValueIsEmpty
 import utils
 from logger import app_logger
 
 def createKeyValue(key: str, value: str, session: SessionDep):
+    print(value)
+    if not value:
+        raise ValueIsEmpty(key=key)
     try:
         current_time = updated_time = utils.get_current_time_in_str()
         db_key_value = KeyValue(key=key, value=value, created_time=current_time, updated_time=updated_time)
