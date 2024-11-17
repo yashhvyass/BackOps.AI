@@ -1,7 +1,21 @@
 # AI-agent-operating-backend-system
 The repository contains hackathon project code for AI agent operating backend system
 
-Team Member Name 1: Dev Patel
-Team Member Name 2: Yash Vyas
-Team Member Name 1: Dhruv Bhanderi
-Team Member Name 1: Dhwanit Pandya
+* Steps to Run these Project:
+
+1. Clone this repo.
+2. Create virtual environment using python `venv` command.
+3. Activate virtual environment.
+4. Install all dependencies using `pip install -r requirements.txt`.
+5. Go to `app` directory using `cd AI-agent-operating-backend-system/app`.
+6. Run `uvicorn main:app --reload` to start your application.
+
+* Collabrators
+
+| Team Member Name | Email |
+| ----- | ----- |
+| Dev Patel | dap3@iu.edu |
+| Dhruv Bhanderi | dgbhander@iu.edu |
+| Yash Vyas | yashhvyass@iu.edu |
+| Dhwanit Pandya | dhpandya@iu.edu |
+
