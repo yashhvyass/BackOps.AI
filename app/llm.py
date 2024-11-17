@@ -7,10 +7,10 @@ client = OpenAI(api_key=OpenAI_API_KEY)
 
 user_request = "Make an entry to my table with key 'name' and value is 'dhruv'. Also remove data with key 'email' and value 'dgb@gmail.com'. also change my existing name from dhruv to dev"
 
-async def parse_from_llm(user_request):
+def parse_from_llm(user_request):
     try:
         # Call OpenAI API
-        completion = await client.chat.completions.create(
+        completion = client.chat.completions.create(
             model="gpt-4o-2024-05-13",
             messages=[
                 {

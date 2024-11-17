@@ -119,6 +119,6 @@ def log_stats_of_past_days(days: int):
         stats = utils.get_stats(year, month, current_day - day)
 
         ans["count"].append(stats["Inserted"] + stats["Updated"] + stats["Deleted"])
-        ans["date"].append(f"{month}/{day}/{year}")
+        ans["date"].append(f"{month}/{current_day - day}/{year}")
 
     return ans
