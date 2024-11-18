@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AI-agent-operating-backend-system
 The repository contains hackathon project code for AI agent operating backend system
 
@@ -23,4 +22,3 @@ The repository contains hackathon project code for AI agent operating backend sy
 =======
 # BackOps.AI
 Repository for BackOps.AI - Winner of 2024 Annual Luddy Hackathon held at Indiana University Bloomington
->>>>>>> 2db9dd6096a787494744f299ea32699b07c084f1
