@@ -1,8 +1,11 @@
 import json
 from openai import OpenAI
+import os
+from dotenv import load_dotenv, find_dotenv
 
-OpenAI_API_KEY = "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"
+OpenAI_API_KEY = load_dotenv(find_dotenv("OpenAI_API_KEY"))
 
+SECRET_KEY = os.environ.get("SECRET_KEY")
 client = OpenAI(api_key=OpenAI_API_KEY)
 
 user_request = "Make an entry to my table with key 'name' and value is 'dhruv'. Also remove data with key 'email' and value 'dgb@gmail.com'. also change my existing name from dhruv to dev"
